@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 75px;
+            color: #333;
+            margin: 0;
+            padding: 5px 35px 15px;
+            text-decoration: underline;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            max-width: 1850px;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            font-size: 70px;
+        }
+
+        th {
+            background-color: #F22A2A;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Light grey for alternating rows */
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff; /* White for alternating rows */
+        }
+
+        td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        caption {
+            caption-side: top;
+            font-size: 1.5rem;
+            margin: 10px 0;
+            color: #666;
+        }
+    </style>
+    <script>
+        let currentPage = 0;
+        let totalPages = {{ pages|length }};
+
+        function showPage(index) {
+            // Hide all pages
+            const tables = document.querySelectorAll(".page");
+            tables.forEach((table, i) => {
+                table.style.display = i === index ? "table" : "none";
+            });
+        }
+
+        function nextPage() {
+            currentPage = (currentPage + 1) % totalPages;
+            showPage(currentPage);
+        }
+
+        window.onload = function () {
+            showPage(0); // Show the first page
+            setInterval(nextPage, 10000); // Change page every 5 seconds
+        };
+    </script>
+</head>
+<body>
+    <div class="header-container">
+        <h1>Room Changes</h1>
+        {% if date %}
+        <h1>{{ date }}</h1>
+        {% endif %}
+    </div>
+
+    {% if pages %}
+        {% for rows in pages %}
+        <table class="page" style="display: none;">
+            <thead>
+                <tr>
+                    {% for header in headers %}
+                    <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    {% for cell in row %}
+                    <td>{{ cell }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endfor %}
+    {% else %}
+    <p>No data available to display.</p>
+    {% endif %}
+</body>
+</html>
